@@ -3,11 +3,11 @@ events = require('events'),
 fs = require('fs');
 
 
-/*
-watching is accomplished at the file descriptor level.
-watching a "filename" means you get events on deleted files that applications are still writing too open descriptors too.
-a big thing to note is that if a file is moved
-*/
+//
+//watching is accomplished at the file descriptor level.
+//watching a "filename" means you get events on deleted files where applications are still writing to open descriptors they are holding.
+//a big thing to note is that if a file is moved and another process starts to write to it these change events will be buffered
+//
 exports.watch = function(filename,options,listener){
   return new Watcher(filename,options,listener);
 };
@@ -83,8 +83,6 @@ var WatcherMethods = {
     fs.unwatchFile(this.file);
     clearTimeout(this._timeoutInterval);
   },
-  //stopWatchingInode
-  //getInode
   //------ protected methods -------
   
   //
