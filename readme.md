@@ -27,8 +27,7 @@ watchfd.watch(filename, [options], listener)
 
 - filename
   its really intended that this be a regular file or non existant. i dont know what would happen right now if its a directory.
-- options
-  supported custom options are
+- options. supported custom options are
 
 	```js
 	{
@@ -38,11 +37,9 @@ watchfd.watch(filename, [options], listener)
 	"timeoutInterval":60*5*1000 //every five minutes
 	// how often to check for inactive file descriptors
 	}
-	```
 
-  the options object is also passed directly to watch and watchFile so you may configure
+	//the options object is also passed directly to watch and watchFile so you may configure
 
-	```js
 	{
 	"persistent":true, //defaults to true
 	//persistent indicates whether the process should continue to run as long as files are being watched
