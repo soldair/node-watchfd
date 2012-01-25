@@ -16,10 +16,43 @@ active is defined by a timeout since last event. file descriptors that become in
 		console.log(prev.size,' changed to ',cur.size);
 	});
 
-#### a use case:
+### a use case
 
 an issue with log/file forwarding utilities currently available in npm is that they only watch the file descriptor under the filename. when a log is rotated and a new log is created the server may not stop writing to the old file descriptor immediately. Any data written to that descriptor in this state ends up in /dev/null
 
+
+### argument structure
+
+watchfd.watch(filename, [options], listener)
+
+- filename
+  its really intended that this be a regular file or non existant. i dont know what would happen right now if its a directory.
+- options
+  supported custom options are
+
+	{
+	"timeout": 60*60*1000, //defaults to one hour
+	//how long an inactive file descriptor can remain inactive
+
+	"timeoutInterval":60*5*1000 //every five minutes
+	// how often to check for inactive file descriptors
+	}
+  the options object is also passed directly to watch and watchFile so you may configure
+
+	{
+	"persistent":true, //defaults to true
+	//persistent indicates whether the process should continue to run as long as files are being watched
+
+	"interval":0, //defaults 0
+	//interval indicates how often the target should be polled, in milliseconds. (On Linux systems with inotify, interval is ignored.) 
+	}
+
+- callback
+  this is bound to the change event of the watcher. its required
+
+	callback(cur,prev)
+
+  cur and prev are instances of fs.Stats
 
 #### windows support problems
 
