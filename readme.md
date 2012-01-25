@@ -29,6 +29,7 @@ watchfd.watch(filename, [options], listener)
   its really intended that this be a regular file or non existant. i dont know what would happen right now if its a directory.
 - options
   supported custom options are
+
 	```js
 	{
 	"timeout": 60*60*1000, //defaults to one hour
@@ -38,8 +39,9 @@ watchfd.watch(filename, [options], listener)
 	// how often to check for inactive file descriptors
 	}
 	```
+
   the options object is also passed directly to watch and watchFile so you may configure
-	```js
+
 	{
 	"persistent":true, //defaults to true
 	//persistent indicates whether the process should continue to run as long as files are being watched
@@ -47,12 +49,14 @@ watchfd.watch(filename, [options], listener)
 	"interval":0, //defaults 0
 	//interval indicates how often the target should be polled, in milliseconds. (On Linux systems with inotify, interval is ignored.) 
 	}
-	```
+
 - callback
   this is bound to the change event of the watcher. its required
+
 	```js
 	callback(cur,prev)
 	```
+
   cur and prev are instances of fs.Stats
 
 #### windows support problems
