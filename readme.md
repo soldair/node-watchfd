@@ -42,7 +42,7 @@ watchfd.watch(filename, [options], listener)
 
   the options object is also passed directly to watch and watchFile so you may configure
 
-        ```js
+	```js
 	{
 	"persistent":true, //defaults to true
 	//persistent indicates whether the process should continue to run as long as files are being watched
