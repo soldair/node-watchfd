@@ -61,6 +61,17 @@ watchfd.watch(filename, [options], listener)
 
   cur and prev are instances of fs.Stats
 
+### events
+
+- change
+		fs.Stats cur, fs.Stats prev
+- open
+		fs.Stats cur,{fd:file descriptor,stat:fs.Stats cur}
+- unlink
+                fs.Stats cur,{fd:file descriptor,stat:fs.Stats cur}
+- timeout
+                fs.Stats cur,{fd:file descriptor,stat:fs.Stats cur}
+
 #### windows support problems
 
 - It uses file inode as a unique id for each descriptor. I know there is a way to get a unique id for a file in windows i just don't know if that would be passed to stat as stat.ino. 
