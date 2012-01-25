@@ -42,6 +42,7 @@ watchfd.watch(filename, [options], listener)
 
   the options object is also passed directly to watch and watchFile so you may configure
 
+        ```js
 	{
 	"persistent":true, //defaults to true
 	//persistent indicates whether the process should continue to run as long as files are being watched
@@ -49,6 +50,7 @@ watchfd.watch(filename, [options], listener)
 	"interval":0, //defaults 0
 	//interval indicates how often the target should be polled, in milliseconds. (On Linux systems with inotify, interval is ignored.) 
 	}
+	```
 
 - callback
   this is bound to the change event of the watcher. its required
