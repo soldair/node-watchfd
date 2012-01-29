@@ -41,7 +41,6 @@ function Watcher(filename,options,listener){
   this.on('change',args.listener);
   
   fs.stat(this.file,function(err,stat) {
-    
     if(err) {
       
       if(err.code != 'ENOENT') {
@@ -82,6 +81,7 @@ var WatcherMethods = {
     }
     fs.unwatchFile(this.file);
     clearTimeout(this._timeoutInterval);
+    this.emit('close');
   },
   //------ protected methods -------
   
@@ -104,7 +104,6 @@ var WatcherMethods = {
     fs.watchFile(this.file,this.options,function(cur,prev){
       //i need to know what fd is the active fd inter the file path
       self._fileStat = cur;
-      
       if(!self.fds[cur.ino]){
         self._observeInode(cur);
     
@@ -113,7 +112,7 @@ var WatcherMethods = {
         self.emit('unlink',self.fds[cur.ino].fd,self.fds[cur.ino].getData());
 
       } else if(cur.size === prev.size){
-        console.log('same size');
+
         //sometimes the watch event fires after an unlink with nlink still equal to 1
         //i stat to first see if its not there
         //by the time stat is done checking the file could have been replaced by a new file
@@ -145,13 +144,14 @@ var WatcherMethods = {
     //timeouts are not subject to stacking and stuff with process overload
     var self = this;
     self._timeoutInterval = setTimeout(function fn(){
+      self._timeoutInterval = setTimeout(fn,self.options.timeoutInterval);
+
       if(!self._fileStat) {
         return;
       }
       for(var inode in self.fds){
         if(self.fds.hasOwnProperty(inode) && self.fds[inode]) {  
           if(inode+'' !== self._fileStat.ino+''){
-
             var fdState = self.fds[inode],
                 mtime = Date.parse(fdState.stat.mtime);
             
@@ -164,15 +164,16 @@ var WatcherMethods = {
 
             if(sinceChange > self.options.timeoutInterval){
 
-                self.emit('timeout',fdState.fd,fdState.getData());
                 self._closeFd(inode);
+                self.emit('timeout',fdState.fd,fdState.getData());
+                
             }
 
           }
           
         }
       }
-      self._timeoutInterval = setTimeout(fn,self.options.timeoutInterval);
+      
     },self.options.timeoutInterval);
   },
   //
@@ -219,8 +220,10 @@ var WatcherMethods = {
   // clean up 
   //
   _closeFd:function(inode){
-    this.fds[inode].close();
-    delete this.fds[inode];
+    if(this.fds[inode]) {
+      this.fds[inode].close();
+      delete this.fds[inode];
+    }
   },
   //
   // change dispatcher - sends WatcherFd data with each change event.
@@ -229,7 +232,7 @@ var WatcherMethods = {
     this.emit('change',stat,prev,this.fds[stat.ino].getData());
   },
   //
-  //format arguments for easy reading / access
+  // format arguments for easy reading / access
   //
   _normalizeArguments:function(args){
     if(typeof args[1] == 'function'){
