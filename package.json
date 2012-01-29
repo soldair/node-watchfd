@@ -1,16 +1,18 @@
 { 
  "name": "watchfd"
- , "description": ""
- , "version": "0.0.1"
+ , "description": "watch events for file descriptors that are referenced by a watched path or were referenced by a watched path for as long as they are still chnaging"
+ , "version": "0.0.2"
  , "author": "Ryan Day <soldair@gmail.com>"
- , "keywords": ["watch", "descriptors", "log", "forwarding"]
+ , "keywords": ["watch", "descriptors", "log", "fs"]
  , "main": "./watch.js"
  ,"homepage":"http://github.com/soldair/node-watchfd"
  ,"repository":{
 	"type":"git"
 	,"url":"git://github.com/soldair/node-watchfd.git"
  }
-
+ ,"scripts":{
+  "test":"./test.sh"
+ }
  ,"devDependencies":{
  	"should":"0.5.x"
 	,"expresso":"0.9.x"

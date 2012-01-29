@@ -27,7 +27,7 @@ exports['test events'] = function(beforeExit){
   expect.expect('close',function(err,data){
     if(err) {
       watcher.close();
-      fs.unlink()
+      fs.unlink();
       throw err;
     }
   },20000);
@@ -38,7 +38,7 @@ exports['test events'] = function(beforeExit){
     if(!changesObservedThroughDefaultListener){
       ("this test should have triggered the default change handler numerous times").should.eql(true);
     }
-  }
+  };
   
   beforeExit(cleanup);
   
@@ -57,8 +57,9 @@ exports['test events'] = function(beforeExit){
       fs.open(logFile,'a+',function(err,fd){
         (!err).should.eql(true);
         
-        fd1 = fd
-        ,buf = new Buffer('party rockin');
+        fd1 = fd;
+        
+        var buf = new Buffer('party rockin');
         
         // watchFile does not seem to hit imediately for regular empty files.
         fs.write(fd1,buf,0,buf.length,null,function(err,bytesWritten){
@@ -92,10 +93,8 @@ exports['test events'] = function(beforeExit){
     },
     //
     "create again wait for open":function(){
-      var t = Date.now();
       expect.expect('open',function(err,data){
         if(err) throw err;
-        console.log('had to wait ',Date.now()-t,'ms for open to be called after unlink');
         done();
       },10000);
       

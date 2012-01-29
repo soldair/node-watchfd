@@ -24,7 +24,7 @@ setInterval(function(){
 
 setInterval(function(){
   fs.unlink('taco.log');
-  console.log(Object.keys(watcher.fds).length,' fds being watched')
+  console.log(Object.keys(watcher.fds).length,' fds being watched');
 },10000);
 
 

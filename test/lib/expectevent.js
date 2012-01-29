@@ -22,14 +22,14 @@ function ExpectEvent(emitter,options){
       self.log(ev,args);
       
       return e.apply(emitter,arguments);
-    }
+    };
     
     //
     // add un expect handle to emitter just in case an edge case needs to turn it off from the inside
     //
     emitter.unexpectevent = function(){
        emitter.emit = e;
-    }
+    };
   }
 
   options = options ||{};
