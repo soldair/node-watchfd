@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/soldair/node-watchfd.png)](http://travis-ci.org/soldair/node-watchfd)
+
 ## goal
 
 provide events for any file descriptors that are referenced by a watched path
