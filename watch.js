@@ -206,7 +206,7 @@ var WatcherMethods = {
           fs.fstat(fd,function(err,stat){
             var prev = fdState.stat;
             fdState.stat = stat;
-            self._observeChange(stat,prev,fdState);
+            self._observeChange(stat,prev);
           });
         });
         // observe change that told us about the fd
@@ -257,10 +257,10 @@ WatcherFd.prototype = {
   state:null,
   watcher:null,
   created:null,
-  getData:function(){
-    return {fd:this.fd.fd,stat:this.stat};
+  getData:function() {
+    return {fd:this.fd,stat:this.stat};
   },
-  close:function(){
+  close:function() {
     if(this.fd) fs.close(this.fd);
     if(this.watcher) this.watcher.close();
     clearTimeout(this.timer);

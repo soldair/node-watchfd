@@ -71,6 +71,8 @@ exports['test events'] = function(beforeExit){
     "trigger change expect that it is fired within one second":function(){
       expect.expect('change',function(err,data){
         if(err) throw err;
+        //must have file descriptor with change events
+        (!!data[3].fd).should.eql(true);
         done();
       },1000);
       

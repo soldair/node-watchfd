@@ -1,22 +1,30 @@
-{ 
- "name": "watchfd"
- , "description": "watch events for file descriptors that are referenced by a watched path or were referenced by a watched path for as long as they are still chnaging"
- , "version": "0.0.2"
- , "author": "Ryan Day <soldair@gmail.com>"
- , "keywords": ["watch", "descriptors", "log", "fs"]
- , "main": "./watch.js"
- ,"homepage":"http://github.com/soldair/node-watchfd"
- ,"repository":{
-	"type":"git"
-	,"url":"git://github.com/soldair/node-watchfd.git"
- }
- ,"scripts":{
-  "test":"./test.sh"
- }
- ,"devDependencies":{
- 	"should":"0.5.x"
-	,"expresso":"0.9.x"
-  ,"jshint":"0.5.x"
- }
- ,"engines":{"node":">=0.6.0"}
+{
+  "name": "watchfd",
+  "description": "watch events for file descriptors that are referenced by a watched path or were referenced by a watched path for as long as they are still chnaging",
+  "version": "0.0.3",
+  "author": "Ryan Day <soldair@gmail.com>",
+  "keywords": [
+    "watch",
+    "descriptors",
+    "log",
+    "fs"
+  ],
+  "main": "./watch.js",
+  "homepage": "http://github.com/soldair/node-watchfd",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/soldair/node-watchfd.git"
+  },
+  "scripts": {
+    "test": "./test.sh"
+  },
+  "devDependencies": {
+    "should": "0.5.x",
+    "expresso": "0.9.x",
+    "jshint": "0.5.x"
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "dependencies": {}
 }
