@@ -48,11 +48,11 @@ exports['test events'] = function(beforeExit){
   
   var q = {
     //
-    "trigger open. expect that it is fired within one second":function(){
+    "trigger open. expect that it is fired within two seconds":function(){
       expect.expect('open',function(err,stat){
         if(err) throw err;
         done();
-      },1000);
+      },2000);
       
       fs.open(logFile,'a+',function(err,fd){
         (!err).should.eql(true);
