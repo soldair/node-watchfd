@@ -204,6 +204,23 @@ var WatcherMethods = {
         fdState.watcher = fs.watch(self.file,function(event,filename) {
           fdState.created = Date.now();//time of last event
           fs.fstat(fd,function(err,stat){
+            if(!self.fds[stat.ino]){
+              //between the first change event. and getting the fd. the file was replaced by another
+
+              //recreate fdState
+              fdState = new WatcherFd(stat);
+              fdState.fd = fd;
+              fdState.created = Date.now();
+              //the watcher is already aware of this fd. no need to recreate it.
+              fdState.watcher = self.fds[inode].watcher;
+
+              //issue timeout event for dead before arival inode
+              this.emit('timeout',null, self.fds[inode].getData());
+              //clean unknown inode
+              delete self.fds[inode];
+
+              self.fds[stat.ino] = fdState;
+            }
             var prev = fdState.stat;
             fdState.stat = stat;
             self._observeChange(stat,prev);
@@ -229,7 +246,8 @@ var WatcherMethods = {
   // change dispatcher - sends WatcherFd data with each change event.
   //
   _observeChange:function(stat,prev) {
-    this.emit('change',stat,prev,this.fds[stat.ino].getData());
+    //should always be set.
+    if(this.fds[stat.ino]) this.emit('change',stat,prev,this.fds[stat.ino].getData());
   },
   //
   // format arguments for easy reading / access

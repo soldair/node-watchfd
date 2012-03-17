@@ -1,7 +1,7 @@
 {
   "name": "watchfd",
-  "description": "watch events for file descriptors that are referenced by a watched path or were referenced by a watched path for as long as they are still chnaging",
-  "version": "0.0.3",
+  "description": "watch events for file descriptors that are referenced by a watched path or were referenced by a watched path for as long as they are still changing",
+  "version": "0.0.4",
   "author": "Ryan Day <soldair@gmail.com>",
   "keywords": [
     "watch",
