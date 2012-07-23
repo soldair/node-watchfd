@@ -1,4 +1,4 @@
-var w = require('../watch.js');
+var w = require('../../watch.js');
 var watcher = w.watch('taco.log',{timeout:5000,timeoutInterval:1000},function(cur,prev){
   console.log('CHANGE ','ino: '+cur.ino+', size: '+prev.size+' -> '+cur.size);
 });

@@ -1,12 +1,13 @@
-var should = require('should'),
-    ExpectEvent = require(__dirname+'/../lib/expectevent.js').ExpectEvent,
+var ExpectEvent = require(__dirname+'/../lib/expectevent.js').ExpectEvent,
+    test = require('tap').test,
+    assert = require('assert'),
     fs = require('fs'),
     watchfd = require(__dirname+'/../../watch.js'),
     logFile = 'test1'+Date.now()+Math.random()+'.log';
 
 
 
-exports['test events'] = function(beforeExit){
+test('test that the stuff works =)',function(t){
   
   var changesObservedThroughDefaultListener = 0,
       watcher = watchfd.watch(logFile,{timeout:1000,timeoutInterval:200},function(cur,prev){
@@ -27,7 +28,7 @@ exports['test events'] = function(beforeExit){
   expect.expect('close',function(err,data){
     if(err) {
       watcher.close();
-      fs.unlink();
+      fs.unlink(logFile);
       throw err;
     }
   },20000);
@@ -36,26 +37,28 @@ exports['test events'] = function(beforeExit){
   var cleanup = function(){
     fs.unlink(logFile);
     if(!changesObservedThroughDefaultListener){
-      ("this test should have triggered the default change handler numerous times").should.eql(true);
+      assert.ok(changesObservedThroughDefaultListener,"this test should have triggered the default change handler numerous times");
     }
   };
   
-  beforeExit(cleanup);
-  
+  process.on('exit',cleanup);
+
   // file descriptors for unlinked events tests
-  var fd1 = null;
+  var fd1 = null,
       fd2 = null;
   
   var q = {
     //
     "trigger open. expect that it is fired within six seconds":function(){
       expect.expect('open',function(err,stat){
+
         if(err) throw err;
         done();
       },6000);
       
       fs.open(logFile,'a+',function(err,fd){
-        (!err).should.eql(true);
+
+        assert.ifError(err);
         
         fd1 = fd;
         
@@ -63,7 +66,7 @@ exports['test events'] = function(beforeExit){
         
         // watchFile does not seem to hit imediately for regular empty files.
         fs.write(fd1,buf,0,buf.length,null,function(err,bytesWritten){
-          (!err).should.eql(true);
+          assert.ifError(err);
         });
       });
     },
@@ -72,14 +75,15 @@ exports['test events'] = function(beforeExit){
       expect.expect('change',function(err,data){
         if(err) throw err;
         //must have file descriptor with change events
-        (!!data[3].fd).should.eql(true);
+        assert.ok(data[3].fd,'must have fd with change events');
+
         done();
       },1000);
       
       var buf = new Buffer('party floppin');
       
       fs.write(fd1,buf,0,buf.length,null,function(err,bytesWritten){
-        (!err).should.eql(true);
+        assert.ifError(err,'can write to file');
       });
     },
     //
@@ -87,10 +91,10 @@ exports['test events'] = function(beforeExit){
       expect.expect('unlink',function(err,data){
         if(err) throw err;
         done();
-      },1000);   
+      },10000);   
       
       fs.unlink(logFile,function(err){
-        (!err).should.eql(true);
+        assert.ifError(err,'got an error cleaning up files');
       });
     },
     //
@@ -101,14 +105,13 @@ exports['test events'] = function(beforeExit){
       },10000);
       
       fs.open(logFile,'w+',function(err,fd){
-        (!err).should.eql(true);
+        assert.ifError(err,'error opening test file for writing');
         fd2 = fd;
         
         var buf = new Buffer('new party');
         
         fs.write(fd2,buf,0,buf.length,null,function(err,bytesWritten){
-          
-          (!err).should.eql(true);
+          assert.ifError(err,'should have written byte to the test file');
         });
       });
     },
@@ -122,7 +125,7 @@ exports['test events'] = function(beforeExit){
       var buf = new Buffer('party unlinked');
       
       fs.write(fd1,buf,0,buf.length,null,function(err,bytesWritten){
-        (!err).should.eql(true);
+        assert.ifError(err,'should not hav error writing test log file');
       });
     },
     //
@@ -130,7 +133,7 @@ exports['test events'] = function(beforeExit){
       
       expect.expect('timeout',function(err,data){
         if(err) throw err;
-        Object.keys(watcher.fds).length.should.eql(1);
+        assert.equal(Object.keys(watcher.fds).length,1,'should only have one fd if fd1 timed out');
         
         done();
       },2000);
@@ -155,9 +158,10 @@ exports['test events'] = function(beforeExit){
   complete = function(){
     watcher.close();
     cleanup();
+    t.end();
   };
   done();
   
-};
+});
 
 

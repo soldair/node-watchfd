@@ -8,9 +8,11 @@ fs = require('fs');
 //watching a "filename" means you get events on deleted files where applications are still writing to open descriptors they are holding.
 //a big thing to note is that if a file is moved and another process starts to write to it these change events will be buffered
 //
-exports.watch = function(filename,options,listener){
+module.exports = function(filename,options,listener){
   return new Watcher(filename,options,listener);
 };
+
+module.exports.watch = module.exports;
 
 function Watcher(filename,options,listener){
   events.EventEmitter.call(this);
@@ -72,7 +74,7 @@ util.inherits(Watcher,events.EventEmitter);
 //
 var WatcherMethods = {
   //public api methods
-  
+   
   close:function(){
     for(var inode in this.fds) {
       if(this.fds.hasOwnProperty(inode)) {
@@ -83,8 +85,25 @@ var WatcherMethods = {
     clearTimeout(this._timeoutInterval);
     this.emit('close');
   },
+  // TODO: 
+  // ## pause and resume. 
+  // 
+  // - paused, changed and last state is kept for each file descriptor
+  //   - stop file descriptors from timing out.
+  //   - all events except error
+  //   - unlink, open
+  //   - change
+  // - resumed, the state events are isued then change
+  //   - opens and unlinks are issued for each file descriptor
+  //   - change event for change if any
+  //
+  //resume:function() {
+  //       
+  //},
+  //pause:function(){
+  //      
+  //},
   //------ protected methods -------
-  
   //
   //this is the path to the last stat i got from the filename im trying to watch.
   //used to differentiate "inactive" descriptors from the one currently residing at that file location.
@@ -102,14 +121,19 @@ var WatcherMethods = {
     var self = this,lastInode = null;
     //NOTE for windows i could poll with fs.stat at options.interval
     fs.watchFile(this.file,this.options,function(cur,prev){
+      
+      if(!cur.ino && prev.ino) cur.ino = prev.ino;
+
       //i need to know what fd is the active fd inter the file path
       self._fileStat = cur;
-      if(!self.fds[cur.ino]){
-        self._observeInode(cur);
-    
-      } else if(cur.nlink === 0) {
-        //no hardlinks left to this file. its unlinked for sure.
+      if(!cur.ino && pre.ino || cur.nlink === 0) {
+        //no hardlinks left to this file. 
+        //or no inode. its unlinked for sure.
         self.emit('unlink',self.fds[cur.ino].fd,self.fds[cur.ino].getData());
+
+      } else if(!self.fds[cur.ino]){
+
+        self._observeInode(cur);
 
       } else if(cur.size === prev.size){
 

@@ -9,6 +9,7 @@ exports.ExpectEvent = ExpectEvent;
 
 function ExpectEvent(emitter,options){
   var self = this;
+
   //
   // hijack emit for watching
   //
@@ -20,7 +21,6 @@ function ExpectEvent(emitter,options){
       //pass all args except event name again to log.
       var args = Array.prototype.slice.call(arguments);
       self.log(ev,args);
-      
       return e.apply(emitter,arguments);
     };
     
@@ -44,7 +44,6 @@ ExpectEvent.prototype = {
   expected:{},
   emitter:null,
   log:function(name,args){
-    
     this.eventLog.push(Array.prototype.slice.call(args).unshift(name));
     if(this.eventLog.length > this.maxLogEntries) this.eventLog.shift();
     

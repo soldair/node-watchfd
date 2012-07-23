@@ -8,7 +8,7 @@ else
 	echo "< jshint passed >";
 fi
 
-expresso ./test/unit/*
+node_modules/tap/bin/tap.js ./test/unit/*
 unit=$?
 if [ $unit != 0 ]; then
 	echo "< script runner stopped unit tests failed >";
