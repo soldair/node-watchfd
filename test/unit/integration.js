@@ -137,6 +137,32 @@ test('test that the stuff works =)',function(t){
         
         done();
       },2000);
+    },
+    "pause and get no events":function(){
+      expect.expect('change',function(err,data){
+        console.log('in change handler!!!!');
+        if(!err) throw new Error('expected to get an error. events should not have fired!');
+        console.log('chnage done!');
+        done();
+      },1000);//same wait as the other change listener
+
+      watcher.pause();
+
+      var buf = new Buffer('paused party');
+      
+      fs.write(fd2,buf,0,buf.length,null,function(err,bytesWritten){
+        assert.ifError(err,'should have written bytes to the test file');
+      });
+    },
+    "resume and get events":function(){
+      expect.expect('change',function(err,data){
+        console.log("in resume and get results handler!");
+        console.log(err,data);
+        if(err) throw err;
+        done();
+      },100);//expect it quickly
+
+      watcher.resume();
     }
   },
   lastStart = Date.now(),

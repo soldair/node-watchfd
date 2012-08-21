@@ -97,12 +97,49 @@ var WatcherMethods = {
   //   - opens and unlinks are issued for each file descriptor
   //   - change event for change if any
   //
-  //resume:function() {
-  //       
-  //},
-  //pause:function(){
-  //      
-  //},
+  paused:false,
+  resume:function() {
+    var self = this;
+    this.emit = this._emit;
+    Object.keys(this._pausedEvents).forEach(function(key,k){
+      var events = self._pausedEvents[key];
+      if(!events) return;
+      if(events.open) self.emit.apply(self,events.open);
+      if(events.change) self.emit.apply(self,events.change);
+      if(events.unlink) self.emit.apply(self,events.unlink);
+    });
+
+    delete this._emit;
+    delete this._pausedEvents;
+    this.paused = false;
+  },
+  pause:function(){
+    var self = this;
+
+    if(this.paused) return;
+    this._pausedEvents = {};
+
+    this.paused = true;
+    //jack emit
+    this._emit = this.emit;
+    this.emit = function(ev,prev,cur) {
+      if(ev == 'error') return this._emit.apply(this,arguments);
+      if(ev == 'open' || ev == 'unlink') {
+        cur = cur.stat;
+      }
+
+      if(!self._pausedEvents[cur.ino]) {
+        self._pausedEvents[cur.ino]= {};
+        self._pausedEvents[cur.ino]._first = cur;
+      }
+
+      self._pausedEvents[cur.ino][ev] = arguments;
+      if(ev == 'change') {
+        //set previous stat to be the first stat after pause
+        self._pausedEvents[cur.ino][ev][1] = self._pausedEvents[cur.ino]._first;
+      }
+    };
+  },
   //------ protected methods -------
   //
   //this is the path to the last stat i got from the filename im trying to watch.
@@ -170,11 +207,17 @@ var WatcherMethods = {
     self._timeoutInterval = setTimeout(function fn(){
       self._timeoutInterval = setTimeout(fn,self.options.timeoutInterval);
 
+      if(self.paused) {
+        return;
+      }
+
       if(!self._fileStat) {
         return;
       }
+
       for(var inode in self.fds){
-        if(self.fds.hasOwnProperty(inode) && self.fds[inode]) {  
+        if(self.fds.hasOwnProperty(inode) && self.fds[inode]) {
+          // if im not the current file descriptor refrenced by path 
           if(inode+'' !== self._fileStat.ino+''){
             var fdState = self.fds[inode],
                 mtime = Date.parse(fdState.stat.mtime);
@@ -238,7 +281,7 @@ var WatcherMethods = {
               //the watcher is already aware of this fd. no need to recreate it.
               fdState.watcher = self.fds[inode].watcher;
 
-              //issue timeout event for dead before arival inode
+              //issue timeout event for dead before new inode
               this.emit('timeout',null, self.fds[inode].getData());
               //clean unknown inode
               delete self.fds[inode];
@@ -271,7 +314,10 @@ var WatcherMethods = {
   //
   _observeChange:function(stat,prev) {
     //should always be set.
-    if(this.fds[stat.ino]) this.emit('change',stat,prev,this.fds[stat.ino].getData());
+    if(!this.fds[stat.ino]) return;
+
+    this.emit('change',stat,prev,this.fds[stat.ino].getData());
+    
   },
   //
   // format arguments for easy reading / access

@@ -71,6 +71,7 @@ ExpectEvent.prototype = {
       
       var err = new Error('event '+name+' not fired before timeout of '+timeout+' ms');
       cb(err,false);
+      console.log('delete expected callback ',c);
       delete self.expected[c];
 
     },timeout);
@@ -81,6 +82,7 @@ ExpectEvent.prototype = {
     this.expected[this.counter] = {
       name:name,
       cb:function(arr,eventArgs){
+        console.log('expect callback ',c,' called');
         //just in case its called after it fails. shouldnt happen but who knows.
         if(failed) {
           console.error('expectEvent warning> callback called after failed. there is probably a bug.');
