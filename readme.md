@@ -1,9 +1,11 @@
 [![Build Status](https://secure.travis-ci.org/soldair/node-watchfd.png)](http://travis-ci.org/soldair/node-watchfd)
 
-## goal
+## watchfd
 
-provide events for any file descriptors that are referenced by a watched path
-or were referenced by a watched path for as long as they are active.
+Watch events open,change,unlink on all files that are refrenced or become refrenced by path
+
+provide events for any file descriptors that are referenced by a watched path, 
+or were referenced by a watched path for as long as they are still changing.
 active is defined by a timeout since last event. file descriptors that become inactive are removed.
 
 

@@ -1,6 +1,6 @@
 {
   "name": "watchfd",
-  "description": "watch events for file descriptors that are referenced by a watched path or were referenced by a watched path for as long as they are still changing",
+  "description": "watch events open,change,unlink on all files that are refrenced or become refrenced by path. pause/resumeable",
   "version": "0.0.6",
   "author": "Ryan Day <soldair@gmail.com>",
   "keywords": [
