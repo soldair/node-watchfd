@@ -85,7 +85,7 @@ var WatcherMethods = {
     clearTimeout(this._timeoutInterval);
     this.emit('close');
   },
-  // TODO: 
+  //  
   // ## pause and resume. 
   // 
   // - paused, changed and last state is kept for each file descriptor

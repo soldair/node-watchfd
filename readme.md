@@ -60,7 +60,36 @@ watchfd.watch(filename, [options], listener)
 
   cur and prev are instances of fs.Stats
 
-### events
+- @returns
+  an instance of Watcher
+
+### Watcher methods
+
+Watcher.pause()
+
+- paused, changed and last state is kept for each file descriptor
+  - stops file descriptors from timing out.
+  - all events except error are paused.
+  - unlink, open, change etc will be fired in the correct order after resume. 
+    no events will be missed but change events will be combined
+
+
+Watcher.resume()
+
+- resumed
+  - for each file descriptor pending events are fired in the corect order
+    open,change,unlink
+  - the change event has the stat from first change event while paused and the most recent so no change is missed.
+
+
+Watcher.paused
+
+ - is paused
+ - readonly please.
+
+### Watcher events
+
+Watcher.on(event name,call back);
 
 - change
 		fs.Stats cur, fs.Stats prev
