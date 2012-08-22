@@ -10,11 +10,11 @@ var ExpectEvent = require(__dirname+'/../lib/expectevent.js').ExpectEvent,
 test('test that the stuff works =)',function(t){
   
   var changesObservedThroughDefaultListener = 0,
-      watcher = watchfd.watch(logFile,{timeout:1000,timeoutInterval:200},function(cur,prev){
-        /*dont need to watch change here*/
-        changesObservedThroughDefaultListener++;
-      }),
-      expect = new ExpectEvent(watcher);
+  watcher = watchfd.watch(logFile,{timeout:1000,timeoutInterval:200},function(cur,prev){
+    /*dont need to watch change here*/
+    changesObservedThroughDefaultListener++;
+  }),
+  expect = new ExpectEvent(watcher);
 
       
   watcher.on('error',function(err){
@@ -140,9 +140,7 @@ test('test that the stuff works =)',function(t){
     },
     "pause and get no events":function(){
       expect.expect('change',function(err,data){
-        console.log('in change handler!!!!');
         if(!err) throw new Error('expected to get an error. events should not have fired!');
-        console.log('chnage done!');
         done();
       },1000);//same wait as the other change listener
 
@@ -157,10 +155,9 @@ test('test that the stuff works =)',function(t){
     "resume and get events":function(){
       expect.expect('change',function(err,data){
         console.log("in resume and get results handler!");
-        console.log(err,data);
         if(err) throw err;
         done();
-      },100);//expect it quickly
+      },1000);//expect it quickly
 
       watcher.resume();
     }

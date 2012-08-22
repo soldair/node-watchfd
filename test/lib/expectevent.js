@@ -70,9 +70,9 @@ ExpectEvent.prototype = {
     var timer = setTimeout(function(){
       
       var err = new Error('event '+name+' not fired before timeout of '+timeout+' ms');
-      cb(err,false);
       console.log('delete expected callback ',c);
       delete self.expected[c];
+      cb(err,false);
 
     },timeout);
 
