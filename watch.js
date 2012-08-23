@@ -122,10 +122,12 @@ var WatcherMethods = {
     this.paused = true;
     //jack emit
     this._emit = this.emit;
-    this.emit = function(ev,prev,cur) {
+    this.emit = function(ev,cur,prev) {
+
       if(ev == 'error') return this._emit.apply(this,arguments);
       if(ev == 'open' || ev == 'unlink') {
-        cur = cur.stat;
+        if(prev.stat) prev = prev.stat;
+        cur = prev;
       }
 
       if(!self._pausedEvents[cur.ino]) {
@@ -136,7 +138,7 @@ var WatcherMethods = {
       self._pausedEvents[cur.ino][ev] = arguments;
       if(ev == 'change') {
         //set previous stat to be the first stat after pause
-        self._pausedEvents[cur.ino][ev][1] = self._pausedEvents[cur.ino]._first;
+        self._pausedEvents[cur.ino][ev][2] = self._pausedEvents[cur.ino]._first;
       }
     };
   },
