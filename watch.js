@@ -101,6 +101,7 @@ var WatcherMethods = {
   resume:function() {
     var self = this;
     this.emit = this._emit;
+    this.paused = false;
     Object.keys(this._pausedEvents).forEach(function(key,k){
       var events = self._pausedEvents[key];
       if(!events) return;
@@ -111,7 +112,6 @@ var WatcherMethods = {
 
     delete this._emit;
     delete this._pausedEvents;
-    this.paused = false;
   },
   pause:function(){
     var self = this;
