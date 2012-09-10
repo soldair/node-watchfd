@@ -102,7 +102,7 @@ var WatcherMethods = {
     var self = this;
     this.emit = this._emit;
     this.paused = false;
-    Object.keys(this._pausedEvents).forEach(function(key,k){
+    Object.keys(this._pausedEvents||{}).forEach(function(key,k){
       var events = self._pausedEvents[key];
       if(!events) return;
       if(events.open) self.emit.apply(self,events.open);

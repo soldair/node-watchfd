@@ -1,7 +1,7 @@
 {
   "name": "watchfd",
   "description": "watch events open,change,unlink on all files that are refrenced or become refrenced by path. pause/resumeable",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "Ryan Day <soldair@gmail.com>",
   "keywords": [
     "watch",
