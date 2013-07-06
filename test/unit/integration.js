@@ -32,7 +32,12 @@ test('test that the stuff works =)',function(t){
       throw err;
     }
   },20000);
-  
+
+  // file not exists event should be triggered
+  expect.expect('noent',function(err,data){
+    if(err) throw err;
+  },1000);
+
   //cleanup
   var cleanup = function(){
     fs.unlink(logFile);

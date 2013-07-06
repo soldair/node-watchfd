@@ -1,7 +1,7 @@
 {
   "name": "watchfd",
   "description": "watch events open,change,unlink on all files that are refrenced or become refrenced by path. pause/resumeable",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "author": "Ryan Day <soldair@gmail.com>",
   "keywords": [
     "watch",
@@ -16,7 +16,7 @@
     "url": "git://github.com/soldair/node-watchfd.git"
   },
   "scripts": {
-    "test": "./test.sh"
+    "test": "tap ./test/unit/*.js"
   },
   "devDependencies": {
     "tap": "*",

@@ -54,6 +54,8 @@ function Watcher(filename,options,listener){
         });
         return;
         
+      } else {
+        self.emit('noent');
       }
       
     } else {
