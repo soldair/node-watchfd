@@ -132,6 +132,8 @@ var WatcherMethods = {
         cur = prev;
       }
 
+      if(!cur) return;
+
       if(!self._pausedEvents[cur.ino]) {
         self._pausedEvents[cur.ino]= {};
         self._pausedEvents[cur.ino]._first = cur;
