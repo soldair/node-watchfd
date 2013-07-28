@@ -264,11 +264,12 @@ var WatcherMethods = {
         inode = stat.ino;
 
     fs.open(this.file,'r',function(err,fd){
-      if(err){
+      if(err || !self.fds[inode]){
         
         //file must not exist now. it was deleted pretty quickly.. =/
+        // or i was ended while i was setting up
         self._closeFd(stat.ino);
-        
+       
       } else {
         
         fdState.fd = fd;
@@ -277,6 +278,10 @@ var WatcherMethods = {
         fdState.watcher = fs.watch(self.file,function(event,filename) {
           fdState.created = Date.now();//time of last event
           fs.fstat(fd,function(err,stat){
+
+            // ended. while i was setting up
+            if(!self.fds[inode]) return; 
+
             if(!self.fds[stat.ino]){
               //between the first change event. and getting the fd. the file was replaced by another
 
@@ -284,6 +289,7 @@ var WatcherMethods = {
               fdState = new WatcherFd(stat);
               fdState.fd = fd;
               fdState.created = Date.now();
+
               //the watcher is already aware of this fd. no need to recreate it.
               fdState.watcher = self.fds[inode].watcher;
 
