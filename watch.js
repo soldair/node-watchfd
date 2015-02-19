@@ -169,7 +169,7 @@ var WatcherMethods = {
 
       //i need to know what fd is the active fd inter the file path
       self._fileStat = cur;
-      if(!cur.ino && pre.ino || cur.nlink === 0) {
+      if(!cur.ino && prev.ino || cur.nlink === 0) {
         //no hardlinks left to this file. 
         //or no inode. its unlinked for sure.
         self.emit('unlink',self.fds[cur.ino].fd,self.fds[cur.ino].getData());
