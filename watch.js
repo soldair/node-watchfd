@@ -172,7 +172,8 @@ var WatcherMethods = {
       if(!cur.ino && prev.ino || cur.nlink === 0) {
         //no hardlinks left to this file. 
         //or no inode. its unlinked for sure.
-        self.emit('unlink',self.fds[cur.ino].fd,self.fds[cur.ino].getData());
+        var ino = cur.ino||prev.ino;
+        self.emit('unlink',self.fds[ino].fd,self.fds[ino].getData());
 
       } else if(!self.fds[cur.ino]){
 
