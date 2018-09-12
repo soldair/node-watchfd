@@ -61,19 +61,21 @@ test('test that the stuff works =)',function(t){
         done();
       },6000);
       
-      fs.open(logFile,'a+',function(err,fd){
-
-        assert.ifError(err);
-        
-        fd1 = fd;
-        
-        var buf = new Buffer('party rockin');
-        
-        // watchFile does not seem to hit imediately for regular empty files.
-        fs.write(fd1,buf,0,buf.length,null,function(err,bytesWritten){
+      // Delay first write by 500ms, greater than watcher's timeoutInterval of 200ms
+      setTimeout(function() {
+        fs.open(logFile,'a+',function(err,fd){
           assert.ifError(err);
+
+          fd1 = fd;
+
+          var buf = new Buffer('party rockin');
+
+          // watchFile does not seem to hit imediately for regular empty files.
+          fs.write(fd1,buf,0,buf.length,null,function(err,bytesWritten){
+            assert.ifError(err);
+          });
         });
-      });
+      }, 500);
     },
     //
     "trigger change expect that it is fired within one second":function(){
